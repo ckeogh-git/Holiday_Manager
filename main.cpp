@@ -1,14 +1,14 @@
 #include <iostream>
-#include "TestHolidayPackage.h"
+#include "BeachHoliday.h"
 
 using namespace std;
 
 int main() {
-    cout << "Starting program...\n";
+    cout << "Starting program..." << endl << endl;
 
-    // Call ONE test function
-    runHolidayPackageTest();
+    BeachHoliday b1("BH001", "Mallorca", 7, 899.99, true);
+    b1.displayDetails();
 
-    cout << "\nProgram finished.\n";
+    cout << endl << "Program finished." << endl;
     return 0;
 }
