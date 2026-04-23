@@ -54,13 +54,17 @@ void BookingManager::displayAllBookings() const {
     }
 }
 
-// Find booking by ID
+// Find booking by ID using STL find_if
 int BookingManager::findBookingById(string bookingId) const {
-    for (int i = 0; i < bookings.size(); i++) {
-        if (bookings[i].getBookingId() == bookingId) {
-            return i;
-        }
+    auto it = find_if(bookings.begin(), bookings.end(),
+        [bookingId](const Booking& b) {
+            return b.getBookingId() == bookingId;
+        });
+
+    if (it != bookings.end()) {
+        return it - bookings.begin();
     }
+
     return -1;
 }
 
@@ -79,4 +83,28 @@ void BookingManager::removeBooking(string bookingId) {
 // Helper
 int BookingManager::getBookingCount() const {
     return bookings.size();
+}
+
+// Sort by booking ID
+void BookingManager::sortBookingsById() {
+    sort(bookings.begin(), bookings.end(),
+        [](const Booking& a, const Booking& b) {
+            return a.getBookingId() < b.getBookingId();
+        });
+}
+
+// Sort by customer name
+void BookingManager::sortBookingsByCustomerName() {
+    sort(bookings.begin(), bookings.end(),
+        [](const Booking& a, const Booking& b) {
+            return a.getCustomer().getName() < b.getCustomer().getName();
+        });
+}
+
+// Sort by total cost
+void BookingManager::sortBookingsByTotalCost() {
+    sort(bookings.begin(), bookings.end(),
+        [](const Booking& a, const Booking& b) {
+            return a.calculateTotalCost() < b.calculateTotalCost();
+        });
 }

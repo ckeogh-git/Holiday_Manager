@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 #include "Booking.h"
 
 using namespace std;
@@ -15,22 +16,22 @@ private:
     int maxBookings;
 
 public:
-    // Constructors
     BookingManager();
     BookingManager(int maxB);
 
-    // Setter and getter
     void setMaxBookings(int maxB);
     int getMaxBookings() const;
 
-    // Main functions
     void addBooking(const Booking& booking);
     void displayAllBookings() const;
     int findBookingById(string bookingId) const;
     void removeBooking(string bookingId);
-
-    // Extra helper
     int getBookingCount() const;
+
+    // STL features
+    void sortBookingsById();
+    void sortBookingsByCustomerName();
+    void sortBookingsByTotalCost();
 };
 
 #endif
