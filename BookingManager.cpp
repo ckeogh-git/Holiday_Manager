@@ -108,3 +108,106 @@ void BookingManager::sortBookingsByTotalCost() {
             return a.calculateTotalCost() < b.calculateTotalCost();
         });
 }
+// Save bookings to file
+void BookingManager::saveToFile(string filename) const {
+    ofstream outFile(filename);
+
+    if (!outFile) {
+        throw runtime_error("Could not open file for writing.");
+    }
+
+    for (const Booking& booking : bookings) {
+        HolidayPackage* holiday = booking.getHoliday();
+
+        // Save common booking/customer data first
+        outFile << booking.getBookingId() << ","
+                << booking.getCustomer().getCustomerId() << ","
+                << booking.getCustomer().getName() << ","
+                << booking.getCustomer().getEmail() << ","
+                << booking.getCustomer().getPhoneNumber() << ","
+                << booking.getNofTravellers() << ",";
+
+        // Save holiday type + holiday-specific fields
+        if (BeachHoliday* bh = dynamic_cast<BeachHoliday*>(holiday)) {
+            outFile << "BeachHoliday" << ","
+                    << bh->getPackageId() << ","
+                    << bh->getDestination() << ","
+                    << bh->getDuration() << ","
+                    << bh->getBasePrice() << ","
+                    << bh->getAllInclusive();
+        }
+        else if (CityBreak* cb = dynamic_cast<CityBreak*>(holiday)) {
+            outFile << "CityBreak" << ","
+                    << cb->getPackageId() << ","
+                    << cb->getDestination() << ","
+                    << cb->getDuration() << ","
+                    << cb->getBasePrice() << ","
+                    << cb->getNofTours();
+        }
+
+        outFile << endl;
+    }
+
+    outFile.close();
+    cout << "Bookings saved to file successfully." << endl;
+}
+// Load bookings from file
+void BookingManager::loadFromFile(string filename) {
+    ifstream inFile(filename);
+
+    if (!inFile) {
+        cout << "No existing file found. Starting with empty booking list." << endl;
+        return;
+    }
+
+    bookings.clear();
+
+    string bookingId, customerId, customerName, email, phone;
+    string holidayType, packageId, destination;
+    int travellers, duration;
+    double basePrice;
+    string extraValue;
+
+    while (getline(inFile, bookingId, ',')) {
+        getline(inFile, customerId, ',');
+        getline(inFile, customerName, ',');
+        getline(inFile, email, ',');
+        getline(inFile, phone, ',');
+
+        string travellersStr;
+        getline(inFile, travellersStr, ',');
+        travellers = stoi(travellersStr);
+
+        getline(inFile, holidayType, ',');
+        getline(inFile, packageId, ',');
+        getline(inFile, destination, ',');
+
+        string durationStr, priceStr;
+        getline(inFile, durationStr, ',');
+        getline(inFile, priceStr, ',');
+        getline(inFile, extraValue);
+
+        duration = stoi(durationStr);
+        basePrice = stod(priceStr);
+
+        Customer customer(customerId, customerName, email, phone);
+        HolidayPackage* holidayPtr = nullptr;
+
+        if (holidayType == "BeachHoliday") {
+            bool allInclusive = (extraValue == "1" || extraValue == "true");
+            holidayPtr = new BeachHoliday(packageId, destination, duration, basePrice, allInclusive);
+        }
+        else if (holidayType == "CityBreak") {
+            int nofTours = stoi(extraValue);
+            holidayPtr = new CityBreak(packageId, destination, duration, basePrice, nofTours);
+        }
+
+        if (holidayPtr != nullptr) {
+            Booking booking(bookingId, customer, holidayPtr, travellers);
+            bookings.push_back(booking);
+        }
+    }
+
+    inFile.close();
+    cout << "Bookings loaded from file successfully." << endl;
+}

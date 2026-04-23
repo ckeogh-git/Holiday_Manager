@@ -6,7 +6,10 @@
 #include <string>
 #include <stdexcept>
 #include <algorithm>
+#include <fstream>
 #include "Booking.h"
+#include "BeachHoliday.h"
+#include "CityBreak.h"
 
 using namespace std;
 
@@ -28,10 +31,13 @@ public:
     void removeBooking(string bookingId);
     int getBookingCount() const;
 
-    // STL features
     void sortBookingsById();
     void sortBookingsByCustomerName();
     void sortBookingsByTotalCost();
+
+    // File handling
+    void saveToFile(string filename) const;
+    void loadFromFile(string filename);
 };
 
 #endif

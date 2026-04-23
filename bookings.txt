@@ -1,0 +1,2 @@
+B002,C001,Alice Murphy,alice@gmail.com,0871234567,2,BeachHoliday,BH001,Mallorca,7,899.99,1
+B001,C002,John Kelly,john@gmail.com,0857654321,1,CityBreak,CB001,Paris,4,650,3
