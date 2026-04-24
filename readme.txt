@@ -48,3 +48,6 @@ gcovr --root . --html-details coverage.html
 
 to run cyclomatic complexity calculations 
 lizard *.cpp *.h
+
+to remove exe google files and coverage files run
+rm -f rm -f *.gcda *.gcno *.gcov *.html *.js *.css tests.exe main.exe
